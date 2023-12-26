@@ -21,12 +21,12 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Product Name</label>
-                  <input type="text" name="name" class="form-control" id="name" placeholder="Enter product name">
+                  <input type="text" name="product_name" class="form-control" id="name" placeholder="Enter product name">
                 </div>
                 <!-- /.form-group -->
                 <div class="form-group">
                   <label>Price</label>
-                  <input type="text" name="price" class="form-control" id="price" placeholder="Enter product price">
+                  <input type="text" name="product_price" class="form-control" id="price" placeholder="Enter product price">
 
                 </div>
                 <!-- /.form-group -->
@@ -37,7 +37,7 @@
                   <label>Description</label>
                   <div class="row">
                  <div class="col-md-12">
-                 <textarea name="description" id="summernote" style="width: 100%;">
+                 <textarea name="product_description" id="summernote" style="width: 100%;">
                 </textarea>
             </div>
              
@@ -49,7 +49,7 @@
     <label for="singleInputFile">Upload Main Image</label>
     <div class="input-group">
         <div class="custom-file">
-            <input type="file" name="main_image" class="custom-file-input" id="singleInputFile">
+            <input type="file" name="product_image" class="custom-file-input" id="singleInputFile">
             <label class="custom-file-label" for="singleInputFile">Choose file</label>
         </div>
         <div class="input-group-append">
@@ -57,19 +57,6 @@
         </div>
     </div>
     <div id="main-image-preview-container"></div>
-</div>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <div class="form-group">
-    <label for="exampleInputFile">Upload Gallery Images</label>
-    <div class="input-group">
-        <div class="custom-file">
-            <input type="file" name="gallery_images[]" class="custom-file-input" id="exampleInputFile" multiple>
-            <label class="custom-file-label" for="exampleInputFile">Choose files</label>
-        </div>
-        <div class="input-group-append">
-            <span class="input-group-text">Upload</span>
-        </div>
-    </div>
 </div>
 <!-- /.form-group -->
 <div id="image-preview-container" class="row"></div>
@@ -82,10 +69,21 @@
             </div>
             <!-- /.row -->
           </div>
-          <!-- /.card-body -->
-          <div class="card-footer">
-            Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-            the plugin.
-          </div>
-        </div>
+         
     @endsection
+
+<script>
+$.ajax({
+    url: '/products',
+    type: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function(response) {
+        // Handle success
+    },
+    error: function(error) {
+       
+    }
+});
+</script>
