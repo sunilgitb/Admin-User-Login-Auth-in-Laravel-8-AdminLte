@@ -226,11 +226,21 @@ INSERT INTO `posts` (`id`, `title`, `description`, `admin_id`, `created_at`, `up
 --
 
 CREATE TABLE `products` (
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price` decimal(8,2) NOT NULL,
-  `main_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `gallery_images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`gallery_images`)),
+  `product_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_price` decimal(8,2) NOT NULL,
+ 
+)),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `product_images` (
+ `image_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  
+)),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `id` bigint(20) UNSIGNED NOT NULL
