@@ -15,7 +15,7 @@
           <!-- /.card-header -->
           <div class="card-body" style="margin-left: 250px;">
             <div class="row">
-        <form action="{{url('product', $product->id)}}" method="POST" enctype="multipart/form-data">
+        <form action="" id="editProductForm" enctype="multipart/form-data">
         @csrf
 
               <div class="col-md-6">
@@ -73,17 +73,23 @@ value="{{old('product_price')}}" placeholder="Enter product price">
 
     @endsection
 
-<script>
-$.ajax({
-    url: '/products/. $product->id',
-    type: 'PUT',
-    data: updatedProductData, 
-    success: function(response) {
-       
-    },
-    error: function(error) {
-       
-    }
-});
+@push('scripts')
+    <script>
+     $('#editProductForm').submit(function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
 
-</script>
+            $.ajax({
+                url: '/products/{{ $product->id }}',
+                type: 'PUT',
+                data: formData,
+                success: function(response) {
+                    // Handle success message or redirect
+                },
+                error: function(error) {
+                    console.error('Error updating product:', error);
+                }
+            });
+        });
+    </script>
+@endpush
