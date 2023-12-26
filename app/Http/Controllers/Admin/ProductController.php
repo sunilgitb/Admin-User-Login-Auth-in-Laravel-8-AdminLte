@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Validator;
-
+use DataTables;
 class ProductController extends Controller
 {
    
@@ -16,7 +16,18 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    
+ public function getData()
+    {
+        $products = Product::select(['id', 'product_name', 'product_price', 'product_description'])->get();
+
+        return DataTables::of($products)
+            ->addColumn('action', function($product) {
+                // Add any action buttons you might need in the DataTable
+                return '<button class="btn btn-info">View</button>';
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
     public function store(Request $request)
     {
         
