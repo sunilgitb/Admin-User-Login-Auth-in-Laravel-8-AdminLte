@@ -14,14 +14,14 @@
 @endif
 
     <div class="table-responsive">
-    <table id="example1" class="table table-bordered table-striped">
+    <table id="products-table" class="table table-bordered table-striped">
         <thead>
           <tr>
             <th>Product Name</th>
             <th>Price</th>
             <th>Description</th>
-            <th>Main Image</th>
-            <th>Gallery Images</th>
+            <th> Image</th>
+            
 
           </tr>
         </thead>
@@ -29,26 +29,17 @@
         @foreach ($products as $product)
 
           <tr>
-            <td>{{$product->name}}</td>
-            <td>{{$product->price}}</td>
-            <td>{{$product->description}}</td>
+            <td>{{$product->product_name}}</td>
+            <td>{{$product->product_price}}</td>
+            <td>{{$product->product_description}}</td>
             <td>
-    @if ($product->main_image)
+    @if ($product->product_image)
         <img src="{{ asset('storage/images/'.$product->main_image) }}" alt="Product Image" width="100">
     @else
         No Image Available
     @endif
 </td>
-            <td>
-              @php
-                $galleryImages = is_array($product->gallery_images) ? $product->gallery_images : [];
-              @endphp
-              @foreach ($galleryImages as $galleryImage)
-              <img src="{{ asset('storage/gallery/' . $galleryImage) }}" alt="Gallery Image" width="100">
-
-              @endforeach
-            </td>
-
+          
 
 
           </tr>
@@ -64,20 +55,21 @@
 
 @endsection
 
-<script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
-</script>
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#products-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('products.data') }}',
+                columns: [
+                    { data: 'product_name', name: 'product_name' },
+                    { data: 'product_price', name: 'product_price' },
+                    { data: 'product_description', name: 'product_description' },
+{ data: 'product_image', name: 'product_image' },
+                  
+                ]
+            });
+        });
+    </script>
+@endpush
