@@ -11,6 +11,15 @@ class Product extends Model
     protected $table = 'products';
     protected $primaryKey = 'id';
 
-    protected $fillable = ['name', 'description', 'price', 'main_image', 'gallery_images'];
+    protected $fillable = [
+        'product_name', 'product_price', 'product_description'
+       
+    ];
 
+ 
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+}
 }
