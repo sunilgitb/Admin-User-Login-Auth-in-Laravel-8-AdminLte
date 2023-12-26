@@ -15,7 +15,7 @@
           <!-- /.card-header -->
           <div class="card-body" style="margin-left: 250px;">
             <div class="row">
-        <form action="{{route('store-product')}}" method="POST" enctype="multipart/form-data">
+        <form action="" id="createProductForm" method="POST" enctype="multipart/form-data">
         @csrf
 
               <div class="col-md-6">
