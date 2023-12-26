@@ -1,122 +1,91 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Product;
+use App\Models\ProductImage;
+use Validator;
 
 class ProductController extends Controller
 {
-
+   
     public function index()
     {
-        $products = Product::all(); // Fetch all products from the database
-    
-        return view('admin.products.index', ['products' => $products]);
-    }
-    
-
-public function create() {
-    return view('admin.products.create');
-}
-public function store(Request $request)
-{
-    
-    $validatedData = $request->validate([
-        'name' => 'required',
-        'description' => 'required',
-        'price' => 'required',
-        'main_image' => 'image|max:2048', // Adjust the max size as needed
-        'gallery_images.*' => 'image|max:2048', // Adjust the max size as needed
-    ]);
-
-    $productData = $request->except(['_token', 'main_image', 'gallery_images']);
-    $product = Product::create($productData);
-
-    // Handle main image
-    if ($request->hasFile('main_image')) {
-        $mainImage = $request->file('main_image');
-        $mainImageName = $this->storeAndOptimizeImage($mainImage);
-        $product->main_image = $mainImageName;
-        $product->save();
+        $products = Product::with('images')->get();
+        return response()->json($products);
     }
 
-    // Handle gallery images
-    if ($request->hasFile('gallery_images')) {
-     $galleryImages = $request->file('gallery_images');
-       $galleryImageNames = [];
+    
+    public function store(Request $request)
+    {
+        
+        $validator = Validator::make($request->all(), [
+            'product_name' => 'required',
+            'product_price' => 'required|numeric',
+            'product_description' => 'required',
+            'product_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-       foreach ($galleryImages as $galleryImage) {
-           $galleryImageName = $this->storeAndOptimizeImage($galleryImage);
-           $galleryImageNames[] = $galleryImageName;
-       }
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
 
-       $product->gallery_images = $galleryImageNames;
-       $product->save();
-   }
+        
+        $product = Product::create([
+            'product_name' => $request->product_name,
+            'product_price' => $request->product_price,
+            'product_description' => $request->product_description,
+           
+        ]);
 
-   return redirect()->route('products.index')->with('success', 'Product created successfully');
-}
+        if ($request->hasFile('product_images')) {
+            foreach ($request->file('product_images') as $image) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->storeAs('product_images', $imageName, 'public');
 
-// private function storeAndOptimizeImage($image)
-// {
-//     $imageName = $image->getClientOriginalName();
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $imageName,
+                ]);
+            }
+        }
 
-//     // Store the original image
-//     $image->storeAs('public/images', $imageName);
+        return response()->json(['message' => 'Product created successfully'], 201);
+    }
 
-//     // Create a resized and optimized version of the image
-//     $resizedImage = Image::make($image->getRealPath())
-//         ->resize(800, null, function ($constraint) {
-//             $constraint->aspectRatio();
-//             $constraint->upsize();
-//         })
-//         ->encode('jpg', 80);
+  
+    public function update(Request $request, $id)
+    {
+      
+        $validator = Validator::make($request->all(), [
+            'product_name' => 'required',
+            'product_price' => 'required|numeric',
+            'product_description' => 'required',
+         
+        ]);
 
-//     // Store the resized image
-//     Storage::disk('public')->put('images/' . $imageName, $resizedImage);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
 
-//     return $imageName;
-// }
-private function storeAndOptimizeImage($image)
-{
-    $imageName = $image->getClientOriginalName();
+        $product = Product::findOrFail($id);
+        $product->update([
+            'product_name' => $request->product_name,
+            'product_price' => $request->product_price,
+            'product_description' => $request->product_description,
+   
+        ]);
 
-    // Store the original image
-    $image->storeAs('public/images', $imageName);
-
-    // Create a resized and optimized version of the image
-    $resizedImage = Image::make($image->getRealPath())
-        ->resize(800, null, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        })
-        ->encode('jpg', 80);
-
-    // Store the resized image
-    Storage::disk('public')->put('images/' . $imageName, $resizedImage->stream());
-
-    return $imageName;
-}
-
-
-public function edit($id){
-    $product = Product::find($id);
-    return view('admin.products.edit');
-}
-
-public function delete($id){
-    $product = Product::find($id);
-    $product->delete();
-    return back()->with('success', 'Product deleted successfully');
-}
+        return response()->json(['message' => 'Product updated successfully'], 200);
+    }
 
 
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->delete();
 
-
-
+        return response()->json(['message' => 'Product deleted successfully'], 200);
+    }
 }
