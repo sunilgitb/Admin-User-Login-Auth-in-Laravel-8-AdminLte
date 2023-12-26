@@ -13,46 +13,21 @@
     </div>
 @endif
 
-    <div class="table-responsive">
-    <table id="products-table" class="table table-bordered table-striped display">
+ 
+@section('content')
+    <h1>Product List</h1>
+
+    <table id="products-table" class=" table-bordered table-striped display">
         <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th> Image</th>
-            
-
-          </tr>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
         </thead>
-        <tbody>
-        @foreach ($products as $product)
-
-          <tr>
-            <td>{{$product->product_name}}</td>
-            <td>{{$product->product_price}}</td>
-            <td>{{$product->product_description}}</td>
-            <td>
-    @if ($product->product_image)
-        <img src="{{ asset('storage/images/'.$product->main_image) }}" alt="Product Image" width="100">
-    @else
-        No Image Available
-    @endif
-</td>
-          
-
-
-          </tr>
-
-          @endforeach
-          <!-- Add more table rows as needed -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <!-- /.card-body -->
-</div>
-
+    </table>
 @endsection
 
 @push('scripts')
@@ -63,11 +38,11 @@
                 serverSide: true,
                 ajax: '{{ route('products.data') }}',
                 columns: [
+                    { data: 'id', name: 'id' },
                     { data: 'product_name', name: 'product_name' },
                     { data: 'product_price', name: 'product_price' },
                     { data: 'product_description', name: 'product_description' },
-{ data: 'product_image', name: 'product_image' },
-                  
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]
             });
         });
