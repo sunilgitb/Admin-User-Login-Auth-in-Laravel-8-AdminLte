@@ -42,6 +42,7 @@
                     { data: 'product_name', name: 'product_name' },
                     { data: 'product_price', name: 'product_price' },
                     { data: 'product_description', name: 'product_description' },
+{ data: 'product_image', name: 'product_image' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]
             });
