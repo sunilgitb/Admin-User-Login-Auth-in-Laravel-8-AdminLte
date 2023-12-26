@@ -49,7 +49,7 @@
     <label for="singleInputFile">Upload Main Image</label>
     <div class="input-group">
         <div class="custom-file">
-            <input type="file" name="product_image" class="custom-file-input" id="singleInputFile">
+            <input type="file" name="product_image[]" class="custom-file-input" id="singleInputFile">
             <label class="custom-file-label" for="singleInputFile">Choose file</label>
         </div>
         <div class="input-group-append">
@@ -72,18 +72,25 @@
          
     @endsection
 
-<script>
-$.ajax({
-    url: '/products',
-    type: 'POST',
-    data: formData,
-    processData: false,
-    contentType: false,
-    success: function(response) {
-        // Handle success
-    },
-    error: function(error) {
-       
-    }
-});
-</script>
+   @push('scripts')
+    <script>
+     $('#createProductForm').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/products',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    
+                },
+                error: function(error) {
+                    console.error('Error creating product:', error);
+                }
+            });
+        });
+    </script>
+@endpush
