@@ -14,7 +14,7 @@
 @endif
 
     <div class="table-responsive">
-    <table id="products-table" class="table table-bordered table-striped">
+    <table id="products-table" class="table table-bordered table-striped display">
         <thead>
           <tr>
             <th>Product Name</th>
